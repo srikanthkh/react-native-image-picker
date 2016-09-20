@@ -291,8 +291,8 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
     }
   }
 
-  @Override
-  public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+ @Override
+ public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     //robustness code
     if (mCallback == null || (mCameraCaptureURI == null && requestCode == REQUEST_LAUNCH_IMAGE_CAPTURE)
             || (requestCode != REQUEST_LAUNCH_IMAGE_CAPTURE && requestCode != REQUEST_LAUNCH_IMAGE_LIBRARY
@@ -320,11 +320,13 @@ public class ImagePickerModule extends ReactContextBaseJavaModule implements Act
       case REQUEST_LAUNCH_VIDEO_LIBRARY:
         response.putString("uri", data.getData().toString());
         response.putString("path", getRealPathFromURI(data.getData()));
+        putExtraFileInfo(getRealPathFromURI(data.getData()), response);
         mCallback.invoke(response);
         return;
       case REQUEST_LAUNCH_VIDEO_CAPTURE:
         response.putString("uri", data.getData().toString());
         response.putString("path", getRealPathFromURI(data.getData()));
+        putExtraFileInfo(getRealPathFromURI(data.getData()), response);
         mCallback.invoke(response);
         return;
       default:
