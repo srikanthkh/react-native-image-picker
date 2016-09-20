@@ -295,7 +295,6 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
     }
   }
 
-  @Override
   public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     //robustness code
     if (mCallback == null || (mCameraCaptureURI == null && requestCode == REQUEST_LAUNCH_IMAGE_CAPTURE)
