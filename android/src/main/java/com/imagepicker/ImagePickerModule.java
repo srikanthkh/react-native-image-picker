@@ -295,6 +295,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
     }
   }
 
+  @Override
   public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
     //robustness code
     if (mCallback == null || (mCameraCaptureURI == null && requestCode == REQUEST_LAUNCH_IMAGE_CAPTURE)
@@ -316,7 +317,6 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
     switch (requestCode) {
       case REQUEST_LAUNCH_IMAGE_CAPTURE:
         uri = mCameraCaptureURI;
-        this.fileScan(uri.getPath());
         break;
       case REQUEST_LAUNCH_IMAGE_LIBRARY:
         uri = data.getData();
@@ -324,12 +324,13 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
       case REQUEST_LAUNCH_VIDEO_LIBRARY:
         response.putString("uri", data.getData().toString());
         response.putString("path", getRealPathFromURI(data.getData()));
+        putExtraFileInfo(getRealPathFromURI(data.getData()), response);
         mCallback.invoke(response);
         return;
       case REQUEST_LAUNCH_VIDEO_CAPTURE:
         response.putString("uri", data.getData().toString());
         response.putString("path", getRealPathFromURI(data.getData()));
-        this.fileScan(response.getString("path"));
+        putExtraFileInfo(getRealPathFromURI(data.getData()), response);
         mCallback.invoke(response);
         return;
       default:
@@ -413,7 +414,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
 
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inJustDecodeBounds = true;
-    BitmapFactory.decodeFile(realPath, options);
+    Bitmap photo = BitmapFactory.decodeFile(realPath, options);
     int initialWidth = options.outWidth;
     int initialHeight = options.outHeight;
 
@@ -428,7 +429,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
       } else {
          realPath = resized.getAbsolutePath();
          uri = Uri.fromFile(resized);
-         BitmapFactory.decodeFile(realPath, options);
+         photo = BitmapFactory.decodeFile(realPath, options);
          response.putInt("width", options.outWidth);
          response.putInt("height", options.outHeight);
       }
@@ -445,6 +446,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule {
 
     mCallback.invoke(response);
   }
+
 
   /**
    * Returns number of milliseconds since Jan. 1, 1970, midnight local time.
