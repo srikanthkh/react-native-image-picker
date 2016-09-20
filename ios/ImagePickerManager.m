@@ -351,8 +351,8 @@ RCT_EXPORT_METHOD(showImagePicker:(NSDictionary *)options callback:(RCTResponseS
                     NSError *fileSizeError = nil;
                     [fileURL getResourceValue:&fileSizeValue forKey:NSURLFileSizeKey error:&fileSizeError];
                     if (fileSizeValue){
-                        [response setObject:fileSizeValue forKey:@"fileSize"];
-                        mediaFileSize = fileSizeValue;
+                        NSString *stringFileSizeValue = [[NSString alloc] initWithFormat:@"%@",fileSizeValue];
+                        [response setObject:stringFileSizeValue forKey:@"fileSize"];
                     }
                     
                     self.callback(@[response]);
